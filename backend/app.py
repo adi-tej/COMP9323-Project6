@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
 
 from book import books
 from auth import auth
@@ -13,7 +14,8 @@ app = Flask(__name__)
 app.config['test'] = True
 app.config['SECRET_KEY'] = 'Royal Never Give Up'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql:///....'
-db = SQLAlchemy()
+
+db = SQLAlchemy(app)
 
 app.register_blueprint(auth, url_prefix='/auth')
 app.register_blueprint(books, url_prefix='/book')
