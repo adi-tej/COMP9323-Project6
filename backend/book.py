@@ -2,6 +2,7 @@ from flask import Blueprint
 from flask_restplus import Api, Resource
 
 from app import opshop_api
+from http_status import *
 
 books = Blueprint('book_api', __name__)
 

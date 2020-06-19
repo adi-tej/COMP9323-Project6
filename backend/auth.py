@@ -9,6 +9,7 @@ import json
 
 from app import login_manager, opshop_api, db
 from models import User
+from http_status import *
 
 
 # ------------------------- Authentication ---------------------- #
@@ -57,13 +58,13 @@ class UserLogin(Resource):
         user = User.query.filter_by(register_email=user_email).first()
 
         if not user:
-            return make_response(jsonify({'validation error': 'user not exist', 'status': 400}))
+            return make_response(jsonify({'validation error': 'user not exist', 'status': UNAUTHORIZED}))
         if not check_password_hash(user.password, password):
-            return make_response(jsonify({'validation error': 'password incorrect', 'status': 400}))
+            return make_response(jsonify({'validation error': 'password incorrect', 'status': UNAUTHORIZED}))
 
         token = TOKEN.generate_token(user.user_id, user.register_email, user.user_name)
 
-        return make_response(jsonify({'API-TOKEN': token, 'status': 201}))
+        return make_response(jsonify({'API-TOKEN': token, 'status': POST_SUCCESS}))
 
 @auth.route('/password/')
 class UserPassword(Resource):
@@ -79,13 +80,13 @@ class UserPassword(Resource):
 
         user = User.query.filter_by(register_email=user_email).first()
         if not user:
-            return make_response(jsonify({'validation error': 'user not exist', 'status': 400}))
+            return make_response(jsonify({'validation error': 'user not exist', 'status': UNAUTHORIZED}))
 
         user.password = generate_password_hash(password, method='sha256')
         db.session.add(user)
         db.session.commit()
 
-        return make_response(jsonify({'password update': 'success', 'status': 201}))
+        return make_response(jsonify({'password update': 'success', 'status': POST_SUCCESS}))
 
 class JWToken:
     def __init__(self, my_secret_key, expires):
